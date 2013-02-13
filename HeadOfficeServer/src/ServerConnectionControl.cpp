@@ -5,14 +5,21 @@
  * @version  1.0
  * Copyright 2013 Tom Frampton
  */
+#include <iostream>
+#include <iomanip>
+using namespace std;
 
 #include "ServerConnectionControl.h"
+#include "NewConnectionThread.h" // The function to start a new thread for a new connection
 
 namespace Tom_F
 {
 	ServerConnectionControl::ServerConnectionControl()
 	{
-
+		// Allocate and zero the memory for the sockets
+		connections = (SOCKET*)calloc(MAX_CONN, sizeof(SOCKET));
+		connCount = 0;
+		pthread_mutex_init(&findConnectionLock, NULL);
 	}
 
 	ServerConnectionControl::~ServerConnectionControl()
@@ -44,6 +51,8 @@ namespace Tom_F
 		{
 			// Listen exception
 		}
+
+		listenForConnections();
 	}
 
 	/**
@@ -54,9 +63,11 @@ namespace Tom_F
 		int addressLength = sizeof(addressData);
 		// Listening notice
 		// Listen in an infinite loop
-		for(;;Sleep(10)){
+		for(;;Sleep(10))
+		{
 			connectionSocket = accept(listeningSocket, (SOCKADDR*)&addressData, &addressLength);
-			if(connectionSocket < 0){
+			if(connectionSocket < 0)
+			{
 				// throw connecting error
 			}
 			else
@@ -64,6 +75,17 @@ namespace Tom_F
 				processNewConnection();
 			}
 		}
+	}
+
+	/**
+	 * Starts up the winsock dll
+	 * @return Returns zero if startup was successful
+	 */
+	int ServerConnectionControl::initWinSock()
+	{
+		WSAData wsa;
+		WORD wVersion = MAKEWORD(2,1);
+		return WSAStartup(wVersion, &wsa);
 	}
 
 	/**
@@ -87,11 +109,19 @@ namespace Tom_F
 	 */
 	void ServerConnectionControl::processNewConnection()
 	{
-		SOCKET& newConnection = findAvailableSocket();
+		// Find a socket for this new connection to use
+		SOCKET* newConnection = findAvailableSocket();
 
-		if(newConnection != 0)
+		if(newConnection != NULL)
 		{
+			// Assign the newly made connection to the socket that was found
+			*newConnection = connectionSocket;
+			// Put on heap so it doesn't go out of scope, deleted in closeConnection()
+			ConnectionData* connData = new ConnectionData(this, newConnection, BUF_SIZE);
 
+
+			pthread_t connectionHandler;
+			pthread_create(&connectionHandler, NULL, newConnectionThread, connData);
 		}
 		else
 		{
@@ -102,22 +132,51 @@ namespace Tom_F
 
 	/**
 	 * Finds the next available socket in the connections array.
-	 * @return A reference to the socket that was found, or null if none were available.
+	 * @return A pointer to the socket that was found, or null if none were available.
 	 */
-	SOCKET& ServerConnectionControl::findAvailableSocket()
+	SOCKET* ServerConnectionControl::findAvailableSocket()
 	{
+		pthread_mutex_lock(&findConnectionLock);
+
 		// For the entire socket array
 		for(int i = 0; i < MAX_CONN; i++)
 		{
 			if(connections[i] == 0)
 			{
-				// Return first free slot
+				connections[i] = 1; // Placeholder for that socket so other threads don't take it
+				pthread_mutex_unlock(&findConnectionLock);
 				return &connections[i];
 			}
 		}
 
 		// No slots available.
+		pthread_mutex_unlock(&findConnectionLock);
 		return NULL;
+	}
+
+	/**
+	 * Handles the closing of a connection by closing the socket that was used by that connection.
+	 * @param ConnectionData* Pointer to the connection data that the closing connection was using
+	 */
+	void ServerConnectionControl::closeConnection(ConnectionData* connData) const
+	{
+		closesocket(*connData->getSocketPtr());
+		*connData->getSocketPtr() = 0;
+		delete connData;
+	}
+
+	ostream& operator<<(ostream& os, const ServerConnectionControl& sc){
+		for(int i = 0; i < 10; i++){
+			cout << "Socket " << setw(2) << i << ": ";
+			if(sc.connections[i] == 0){
+				cout << "No connection";
+			}
+			else{
+				cout << "Connection";
+			}
+			cout << "\n";
+		}
+		return os;
 	}
 
 } /* namespace Tom_F */

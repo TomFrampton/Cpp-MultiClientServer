@@ -15,6 +15,9 @@
 
 #include <WinSock2.h> // For sockets
 #include <Windows.h>
+#include <pthread.h> // For POSIX threads
+#include <iostream>
+#include "ConnectionData.h"
 
 using std::ostream; // To overload the << operator
 
@@ -31,6 +34,7 @@ namespace Tom_F
 		virtual ~ServerConnectionControl();
 
 		void run();
+		void closeConnection(ConnectionData* connData) const;
 
 		friend ostream& operator<<(ostream&, const ServerConnectionControl&);
 
@@ -38,15 +42,17 @@ namespace Tom_F
 		int initWinSock();
 		void initAddressData();
 		void listenForConnections();
-		SOCKET& findAvailableSocket();
+		SOCKET* findAvailableSocket();
 		void processNewConnection();
-		void closeConnection(SOCKET &finishedConnection);
 
 		SOCKADDR_IN addressData;
 		SOCKET listeningSocket;
 		SOCKET connectionSocket;
+
 		SOCKET* connections; // To hold all connection sockets
 		int connCount; // Number of connected clients
+
+		pthread_mutex_t findConnectionLock;
 	};
 
 } /* namespace Tom_F */
