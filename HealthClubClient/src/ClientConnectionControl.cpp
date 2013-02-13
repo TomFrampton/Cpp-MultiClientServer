@@ -36,7 +36,7 @@ namespace Tom_F {
 		}
 		else
 		{
-			// cout connected
+			while(true){}
 		}
 	}
 
@@ -66,11 +66,10 @@ namespace Tom_F {
 		SOCKADDR_IN addressData;
 		int addressLength = sizeof(addressData);
 
-		listeningSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		connectionSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 		// Set values for the address data struct
-		addressData.sin_addr.s_addr = htonl(INADDR_ANY);
+		addressData.sin_addr.s_addr = inet_addr(IP_ADDRESS);
 		addressData.sin_family = AF_INET;
 		addressData.sin_port = htons(CONN_PORT);
 

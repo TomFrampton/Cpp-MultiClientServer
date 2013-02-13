@@ -7,7 +7,7 @@
  */
 
 /**
- * This class is responsible for establishing and managing the connection to the server.
+ * This class is responsible for establishing and managing the connection of a local health club to the server.
  */
 
 #ifndef CLIENTCONNECTIONCONTROL_H_
