@@ -6,10 +6,16 @@
 // Description : Represents a local health club that will connect to the
 // 				 company's head office server
 //============================================================================
+#include "AbstractUI.h"
+#include "ConsoleUI.h"
+#include "SimulationControl.h"
 
-#include <iostream>
-using namespace std;
+using namespace Tom_F;
 
 int main() {
+
+	SimulationControl simulation;
+	simulation.run();
+
 	return 0;
 }
