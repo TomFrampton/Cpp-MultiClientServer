@@ -2,7 +2,8 @@
  * TrainingControl.cpp
  *
  *  Created on: 18 Feb 2013
- *      Author: Tom
+ *      Author: Tom Frampton
+ *
  */
 
 #include "TrainingControl.h"

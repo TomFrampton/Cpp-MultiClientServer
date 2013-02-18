@@ -2,7 +2,7 @@
  * TrainingControl.h
  *
  *  Created on: 18 Feb 2013
- *      Author: Tom
+ *      Author: Tom Frampton
  */
 
 #ifndef TRAININGCONTROL_H_
