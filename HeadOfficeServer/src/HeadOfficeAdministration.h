@@ -8,10 +8,11 @@
 #ifndef HEADOFFICEADMINISTRATION_H_
 #define HEADOFFICEADMINISTRATION_H_
 
-#include "Guest.h"
+#define FAIL -1
 
 namespace Tom_F
 {
+	class Guest;
 
 	class HeadOfficeAdministration
 	{
@@ -19,7 +20,7 @@ namespace Tom_F
 		HeadOfficeAdministration();
 		virtual ~HeadOfficeAdministration();
 
-		int enrolMember(Guest& newMember);
+		int enrolMember(const Guest& newMember) const;
 		bool logMemberStats(/*Stat obj*/);
 	};
 

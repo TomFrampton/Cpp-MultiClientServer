@@ -4,6 +4,8 @@
  *  Created on: 20 Feb 2013
  *      Author: Tom
  */
+#include "debug.h"
+#include "MemberMapper.h"
 
 #include "HeadOfficeAdministration.h"
 
@@ -21,10 +23,19 @@ namespace Tom_F
 		// TODO Auto-generated destructor stub
 	}
 
-	int HeadOfficeAdministration::enrolMember(Guest& newMember)
+	int HeadOfficeAdministration::enrolMember(const Guest& newMember) const
 	{
-		// creates person wrapper and enrol member
-		// return person membership no or -1 for failure
+		MemberMapper mapper;
+		int result = mapper.addMemberToDatabase(newMember);
+
+		if(result)
+		{
+			return result;
+		}
+		else
+		{
+			return FAIL;
+		}
 	}
 
 	bool HeadOfficeAdministration::logMemberStats(/*Stat obj*/)
