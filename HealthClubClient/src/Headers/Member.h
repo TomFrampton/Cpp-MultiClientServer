@@ -8,12 +8,16 @@
 #ifndef MEMBER_H_
 #define MEMBER_H_
 
+#include <boost/serialization/base_object.hpp>
+#include "Person.h"
+
 namespace Tom_F
 {
 	class Member : public Person
 	{
 		public:
 			Member();
+			Member(Member& toCopy);
 			Member(int membershipNo);
 			virtual ~Member();
 
