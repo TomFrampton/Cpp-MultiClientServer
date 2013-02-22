@@ -9,14 +9,19 @@
 
 namespace Tom_F
 {
-	Member::Member() : membershipNo(-1)
+	Member::Member() : membershipNo(0)
 	{
-		// TODO Auto-generated constructor stub
+		Person();
+	}
+
+	Member::Member(Member& toCopy) : membershipNo(toCopy.membershipNo)
+	{
+		Person();
 	}
 
 	Member::Member(int memberNo) : membershipNo(memberNo)
 	{
-
+		Person();
 	}
 
 	Member::~Member()

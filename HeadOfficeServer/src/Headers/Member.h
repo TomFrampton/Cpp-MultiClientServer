@@ -17,6 +17,7 @@ namespace Tom_F
 	{
 		public:
 			Member();
+			Member(Member& toCopy);
 			Member(int membershipNo);
 			virtual ~Member();
 
