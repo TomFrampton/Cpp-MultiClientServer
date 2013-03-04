@@ -8,19 +8,35 @@
 #ifndef TRAININGCONTROL_H_
 #define TRAININGCONTROL_H_
 
-namespace Tom_F {
+#include "Thread.h"
+#include "Member.h"
+#include "HealthClubAdmin.h"
+#include "HealthCalculator.h"
+#include "ExerciseProgram.h"
 
-class TrainingControl
+#include "TrainerQueue.h"
+
+namespace Tom_F
 {
+
+	class TrainingControl : public Thread
+	{
 	public:
-		TrainingControl();
+		TrainingControl(Member* trainee, TrainerQueue* trainers, HealthClubAdmin* admin);
 		virtual ~TrainingControl();
 
-		//void train(Member member);
+	protected:
+		void threadStart();
 
 	private:
+		Member* trainee;
+		TrainerQueue* trainers;
+		HealthClubAdmin* admin;
+
+		HealthCalculator healthCalc;
+
 		void preMeeting();
-		void training();
+		void training(ExerciseProgram& program);
 		void postMeeting();
 	};
 
