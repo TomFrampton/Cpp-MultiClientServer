@@ -10,24 +10,26 @@
 namespace Tom_F
 {
 	HealthData::HealthData() :
+	membershipID(0),
 	height(0),
-	weight(0),
-	bodyFatPC(0)
+	weight(0)
 	{
-		// TODO Auto-generated constructor stub
 	}
 
-	HealthData::HealthData(int height, int weight, double bodyFatPC) :
-	height(height),
-	weight(weight),
-	bodyFatPC(bodyFatPC)
+	HealthData::HealthData(Member& trainee) :
+	membershipID(trainee.getMembershipID()),
+	height(trainee.getHeight()),
+	weight(trainee.getWeight())
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	HealthData::~HealthData()
 	{
-		// TODO Auto-generated destructor stub
+	}
+
+	int HealthData::getMembershipID() const
+	{
+		return membershipID;
 	}
 
 	int HealthData::getHeight() const
@@ -38,11 +40,6 @@ namespace Tom_F
 	int HealthData::getWeight() const
 	{
 		return weight;
-	}
-
-	double HealthData::getBodyFatPC() const
-	{
-		return bodyFatPC;
 	}
 
 } /* namespace Tom_F */
